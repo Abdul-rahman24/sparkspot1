@@ -52,8 +52,19 @@ st.success(f"✅ Recommended: **{recommended['name']}** at {recommended['locatio
 st.write(f"🔌 Available Ports: {recommended['available_ports']} | ⏱ Queue Length: {recommended['queue_length']} | 🧠 AI Score: {recommended['score']:.2f}")
 
 # 📌 Google Map View
-st.subheader("🗺️ Station Map")
+# 🗺️ Update stations with exact real-world coordinates
+for s in stations:
+    if s["name"] == "SparkSpot A":
+        s["lat"], s["lon"] = 13.0878, 80.2072  # Anna Nagar
+    elif s["name"] == "SparkSpot B":
+        s["lat"], s["lon"] = 12.9784, 80.2215  # Velachery
+    elif s["name"] == "SparkSpot C":
+        s["lat"], s["lon"] = 13.0425, 80.2337  # T Nagar
+
+# 📌 Google Map View with updated coordinates
+st.subheader("🗺️ Exact Station Map")
 st.map(pd.DataFrame(stations)[["lat", "lon"]])
+
 
 # 📘 Booking Section
 st.subheader("📝 Book Your Charging Slot")
