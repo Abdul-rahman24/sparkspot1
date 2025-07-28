@@ -1,4 +1,4 @@
-import streamlit as st
+   import streamlit as st
 import pandas as pd
 import random
 import datetime
@@ -62,6 +62,9 @@ for s in stations:
 
 df_live = pd.DataFrame(stations)
 recommended = max(stations, key=lambda x: x["score"])
+df_live['color'] = df_live['name'].apply(
+    lambda x: [0, 255, 0] if x == recommended['name'] else [255, 0, 0]
+)
 
 # ---------- HOME PAGE ---------- #
 if page == "Home":
@@ -81,12 +84,11 @@ if page == "Home":
 
     # 🗺️ Custom Map with Colors
     st.subheader("📍 Station Map")
-    color_map = {recommended['name']: [0, 255, 0]}  # green
     layer = pdk.Layer(
         "ScatterplotLayer",
         data=df_live,
         get_position='[lon, lat]',
-        get_color="[0, 255, 0] if name == '" + recommended['name'] + "' else [255, 0, 0]",
+        get_color='color',
         get_radius=100,
     )
     view_state = pdk.ViewState(latitude=13.04, longitude=80.23, zoom=11)
@@ -141,4 +143,3 @@ if page == "Booking Confirmed" and "booking" in st.session_state:
     """.format(**booking), unsafe_allow_html=True)
 
     st.balloons()
-
