@@ -97,7 +97,7 @@ if st.session_state.page == "Home":
         get_radius=100,
     )
     view_state = pdk.ViewState(latitude=13.04, longitude=80.23, zoom=11)
-    st.pydeck_chart(pdk.Deck(map_style="mapbox://styles/mapbox/light-v9", layers=[layer], initial_view_state=view_state))
+    st.pydeck_chart(pdk.Deck(map_style="light",layers=[layer], initial_view_state=view_state))
 
     # 🔗 Book Button
     if st.button("🚘 Book a Charging Slot"):
@@ -125,7 +125,7 @@ if st.session_state.page == "Book Slot":
                 "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
             st.session_state.page = "Booking Confirmed"
-            st.experimental_rerun()
+            st.rerun()
 
 # ---------- BOOKING CONFIRMED PAGE ---------- #
 if st.session_state.page == "Booking Confirmed" and "booking" in st.session_state:
