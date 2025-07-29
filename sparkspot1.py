@@ -27,9 +27,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ---------- SESSION INIT ---------- #
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
+
 # ---------- SIDEBAR ---------- #
 st.sidebar.title("🚗 SparkSpot Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Book Slot", "Booking Confirmed"])
+nav = st.sidebar.radio("Go to", ["Home", "Book Slot", "Booking Confirmed"])
+st.session_state.page = nav
 
 # ---------- DATA GENERATION ---------- #
 def generate_model():
@@ -67,7 +72,7 @@ df_live['color'] = df_live['name'].apply(
 )
 
 # ---------- HOME PAGE ---------- #
-if page == "Home":
+if st.session_state.page == "Home":
     st.markdown("<h1 class='title-style'>🚗 SparkSpot: Smart EV Charging</h1>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle-style'>AI-powered recommendations for EV charging stations in Chennai.</p>", unsafe_allow_html=True)
 
@@ -95,16 +100,12 @@ if page == "Home":
     st.pydeck_chart(pdk.Deck(map_style="mapbox://styles/mapbox/light-v9", layers=[layer], initial_view_state=view_state))
 
     # 🔗 Book Button
-    st.markdown("""
-        <div style='text-align: center; margin-top: 20px;'>
-            <a href='/?page=Book+Slot' style='background-color: #0077b6; color: white; padding: 10px 25px; border-radius: 5px; text-decoration: none;'>
-                🚘 Book a Charging Slot
-            </a>
-        </div>
-    """, unsafe_allow_html=True)
+    if st.button("🚘 Book a Charging Slot"):
+        st.session_state.page = "Book Slot"
+        st.experimental_rerun()
 
 # ---------- BOOK SLOT PAGE ---------- #
-if page == "Book Slot":
+if st.session_state.page == "Book Slot":
     st.markdown("<h1 class='title-style'>📅 Book a Charging Slot</h1>", unsafe_allow_html=True)
 
     with st.form("booking_form"):
@@ -123,11 +124,11 @@ if page == "Book Slot":
                 "phone": phone,
                 "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
-            st.experimental_set_query_params(page="Booking+Confirmed")
+            st.session_state.page = "Booking Confirmed"
             st.experimental_rerun()
 
 # ---------- BOOKING CONFIRMED PAGE ---------- #
-if page == "Booking Confirmed" and "booking" in st.session_state:
+if st.session_state.page == "Booking Confirmed" and "booking" in st.session_state:
     booking = st.session_state["booking"]
     st.markdown("<h1 class='title-style'>🎉 Booking Confirmed!</h1>", unsafe_allow_html=True)
     st.success("Your EV charging slot has been successfully booked.")
