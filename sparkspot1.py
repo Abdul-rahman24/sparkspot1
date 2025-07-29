@@ -33,9 +33,13 @@ if "page" not in st.session_state:
 
 # ---------- SIDEBAR ---------- #
 st.sidebar.title("🚗 SparkSpot Navigation")
-nav = st.sidebar.radio("Go to", ["Home", "Book Slot", "Booking Confirmed"])
-if nav != st.session_state.page:
-    st.session_state.page = nav
+nav_selected = st.sidebar.radio("Go to", ["Home", "Book Slot", "Booking Confirmed"])
+if "nav_prev" not in st.session_state:
+    st.session_state.nav_prev = nav_selected
+
+if nav_selected != st.session_state.nav_prev:
+    st.session_state.page = nav_selected
+    st.session_state.nav_prev = nav_selected
 
 # ---------- DATA GENERATION ---------- #
 def generate_model():
