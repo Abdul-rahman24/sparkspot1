@@ -102,7 +102,7 @@ if st.session_state.page == "Home":
     # 🔗 Book Button
     if st.button("🚘 Book a Charging Slot"):
         st.session_state.page = "Book Slot"
-        st.experimental_rerun()
+        st.rerun()
 
 # ---------- BOOK SLOT PAGE ---------- #
 if st.session_state.page == "Book Slot":
