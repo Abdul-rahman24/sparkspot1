@@ -37,7 +37,6 @@ nav = st.sidebar.radio("Go to", ["Home", "Book Slot", "Booking Confirmed"])
 if nav != st.session_state.page:
     st.session_state.page = nav
 
-
 # ---------- DATA GENERATION ---------- #
 def generate_model():
     data = []
@@ -99,7 +98,7 @@ if st.session_state.page == "Home":
         get_radius=100,
     )
     view_state = pdk.ViewState(latitude=13.04, longitude=80.23, zoom=11)
-    st.pydeck_chart(pdk.Deck(map_style="light",layers=[layer], initial_view_state=view_state))
+    st.pydeck_chart(pdk.Deck(map_style=None, layers=[layer], initial_view_state=view_state))
 
     # 🔗 Book Button
     if st.button("🚘 Book a Charging Slot"):
@@ -114,14 +113,16 @@ if st.session_state.page == "Book Slot":
         selected_station = st.selectbox("Select Station", [s["name"] for s in stations])
         station_info = next((s for s in stations if s["name"] == selected_station), None)
         st.info(f"⏳ Estimated Waiting Time: {station_info['waiting_time']} minutes")
+        name = st.text_input("Name")
         vehicle = st.text_input("Vehicle Number")
         phone = st.text_input("Phone Number")
         submit = st.form_submit_button("✅ Confirm Booking Slot")
 
-        if submit and selected_station and vehicle and phone:
+        if submit and selected_station and name and vehicle and phone:
             st.session_state["booking"] = {
                 "station": selected_station,
                 "location": station_info['location'],
+                "name": name,
                 "vehicle": vehicle,
                 "phone": phone,
                 "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -135,14 +136,15 @@ if st.session_state.page == "Booking Confirmed" and "booking" in st.session_stat
     st.markdown("<h1 class='title-style'>🎉 Booking Confirmed!</h1>", unsafe_allow_html=True)
     st.success("Your EV charging slot has been successfully booked.")
 
-    st.markdown("""
+    st.markdown(f"""
     <ul>
-        <li><b>Station:</b> {station}</li>
-        <li><b>Location:</b> {location}</li>
-        <li><b>Vehicle Number:</b> {vehicle}</li>
-        <li><b>Phone Number:</b> {phone}</li>
-        <li><b>Time:</b> {time}</li>
+        <li><b>Name:</b> {booking['name']}</li>
+        <li><b>Station:</b> {booking['station']}</li>
+        <li><b>Location:</b> {booking['location']}</li>
+        <li><b>Vehicle Number:</b> {booking['vehicle']}</li>
+        <li><b>Phone Number:</b> {booking['phone']}</li>
+        <li><b>Time:</b> {booking['time']}</li>
     </ul>
-    """.format(**booking), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     st.balloons()
